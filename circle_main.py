@@ -34,9 +34,9 @@ if img_file is not None:
                 new_frame = cv2.putText(new_frame, str(i['id'] + 1), (i['center_x'], i['center_y'],), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_WHITE, 2)
                 
             cv2.imshow('parking_lot', new_frame)
-            k = cv2.waitKey(10)
+            k = cv2.waitKey(0)
             if k == ord("q"):
                 break
-        cv2.waitKey(10)
+        cv2.waitKey(0)
         capture.release()
         cv2.destroyAllWindows()
