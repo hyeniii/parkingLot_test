@@ -43,9 +43,10 @@ class CoordinatesGenerator:
             self.coordinates.append([x,y,radius])
             # print(self.ids, self.coordinates)
             new_points = {
-                'id' : str(self.ids),
-                'center': f'({str(self.coordinates[0][0])}, {str(self.coordinates[0][1])})',
-                'radius': f'{str(self.coordinates[0][2])}' 
+                'id' : self.ids,
+                'center_x': self.coordinates[0][0],
+                'center_y' : self.coordinates[0][1],
+                'radius': self.coordinates[0][2] 
             }
             self.data['coordinates'].append(new_points)
             self.coordinates.pop()
