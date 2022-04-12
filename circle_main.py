@@ -8,6 +8,8 @@ img_file = 'images/parking_lot_2.png'
 vid_file = 'videos/parking_lot_2.mp4'
 data_file = 'data/coodinates.json'
 
+class CaptureReadError(Exception):
+    pass
 
 if img_file is not None:
     with open(data_file, 'w+') as points:
@@ -16,10 +18,25 @@ if img_file is not None:
         
     with open(data_file, 'r') as data:
         points = json.load(data)
-        img = cv2.imread(img_file).copy()
-        for i in points['coordinates']:
-            img = cv2.circle(img, (i['center_x'], i['center_y']), i['radius'], (0,0,255), 2)
-            img = cv2.putText(img, str(i['id'] + 1), (i['center_x'], i['center_y'],), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_WHITE, 2)
-        
-        cv2.imshow('parking lot', img)
-        cv2.waitKey(0)
+        capture = cv2.VideoCapture(vid_file)
+        capture.set(cv2.CAP_PROP_POS_FRAMES, 400)
+        while capture.isOpened():
+            result, frame = capture.read()
+            if frame is None:
+                break
+
+            if not result:
+                raise CaptureReadError("Error reading video capture on frame %s" % str(frame))
+            
+            new_frame = frame.copy()
+            for i in points['coordinates']:
+                new_frame = cv2.circle(new_frame, (i['center_x'], i['center_y']), i['radius'], (0,0,255), 2)
+                new_frame = cv2.putText(new_frame, str(i['id'] + 1), (i['center_x'], i['center_y'],), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_WHITE, 2)
+                
+            cv2.imshow('parking_lot', new_frame)
+            k = cv2.waitKey(10)
+            if k == ord("q"):
+                break
+        cv2.waitKey(10)
+        capture.release()
+        cv2.destroyAllWindows()
